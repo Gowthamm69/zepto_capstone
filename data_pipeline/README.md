@@ -2,7 +2,54 @@
 
 ## Objective
 
-Scrape book information from BooksToScrape, clean the data, convert currency, store it in SQLite, and query the database using SQL and Pandas.
+Develop an end-to-end data pipeline that scrapes book information from BooksToScrape, cleans and transforms the data, stores it in a normalized SQLite database, and performs SQL analysis using SQLite and Pandas.
+
+---
+
+## Project Structure
+
+```
+data_pipeline/
+│
+├── scraper.py
+├── cleaner.py
+├── database.py
+├── queries.py
+├── pipeline.py
+├── README.md
+├── data/
+├── database/
+├── outputs/
+└── sql/
+```
+
+---
+
+## Installation
+
+Clone the repository and install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Run
+
+Execute the complete pipeline using:
+
+```bash
+python pipeline.py
+```
+
+This performs the following steps automatically:
+
+1. Scrapes book information.
+2. Cleans and transforms the data.
+3. Creates and populates the SQLite database.
+4. Executes SQL queries.
+5. Saves query outputs.
 
 ---
 
@@ -17,33 +64,35 @@ Scrape book information from BooksToScrape, clean the data, convert currency, st
 
 ## Dataset
 
-Website:
-https://books.toscrape.com
+**Source:** https://books.toscrape.com
 
-Books scraped:
-100
-
-Categories:
-29
+- Books scraped: **100**
+- Categories: **29**
 
 ---
 
-## Cleaning
+## Data Cleaning
 
-- Removed GBP (£) symbol
-- Converted price to float (price_gbp)
-- Converted rating text (One–Five) to integer (1–5)
-- Converted availability to boolean (in_stock)
-- Missing numeric values handled using median imputation
-- Converted GBP to INR using the fixed rate
+The following transformations were applied:
 
+- Removed the GBP (£) currency symbol.
+- Converted prices to numeric (`price_gbp`).
+- Converted textual ratings (One–Five) into integers (1–5).
+- Converted stock availability into boolean values (`in_stock`).
+- Missing numeric values were handled using **median imputation**.
+- Added `price_inr` using a fixed conversion rate.
+
+**Exchange Rate**
+
+```
 1 GBP = 105.50 INR
+```
 
 ---
 
-## Database
+## Database Design
 
-Two normalized tables were created.
+A normalized SQLite database with two related tables was created.
 
 ### categories
 
@@ -60,11 +109,13 @@ Two normalized tables were created.
 - in_stock
 - category_id (Foreign Key)
 
+This design minimizes data duplication and establishes a one-to-many relationship between categories and books.
+
 ---
 
-## SQL Queries
+## SQL Queries Implemented
 
-The following SQL operations were implemented:
+The following SQL operations were demonstrated:
 
 - SELECT
 - WHERE
@@ -74,19 +125,27 @@ The following SQL operations were implemented:
 - BETWEEN
 - JOIN
 
----
-
-## Pandas
-
-The JOIN result was demonstrated using
-
-- pd.read_sql()
-- pd.merge()
+Query outputs are stored in the `outputs/` folder.
 
 ---
 
-## Run
+## Pandas Operations
 
-```bash
-python pipeline.py
-```
+The project demonstrates:
+
+- `pd.read_sql()`
+- `pd.merge()`
+
+to retrieve and combine relational data.
+
+---
+
+## Design Decisions
+
+- Used **SQLite** because it is lightweight and requires no external database server.
+- Used **BeautifulSoup** for HTML parsing due to its simplicity.
+- Used **Pandas** for efficient data cleaning and CSV handling.
+- Used a **normalized database schema** to reduce redundancy.
+- Automated the complete workflow using `pipeline.py`.
+
+---
